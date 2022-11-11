@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+ <script
+   src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=desert&amp;lang=cpp" 
+  defer="">
+ </script>
+
+</head>
+<body>
+    <pre class="prettyprint" id="lang-cpp">
+    #include &lt;type_traits&gt;
+
+    template&lt;class T&gt;
+    concept aggregate = std::is_aggregate_v&lt;std::remove_cvref_t&lt;T&gt;&gt;;
+    
+    // empty class convertible to anything
+    struct ToAnything{ template&lt;class To&gt; operator To&&(); };
+
+    // for an aggregate type 'T',
+    // return the number of data members 
+    template&lt;aggregate T&gt;
+    consteval auto arity(auto... to_anything)
+    {
+        //  could 'T' be construct with one more argument ?
+        if constexpr(requires{ T{ {to_anything}..., {ToAnything{}} }; })
+
+            // yes ? keep trying with more argument
+            return arity&lt;T&gt;(to_anything..., ToAnything{});
+
+        // no ? so we found the aggregate arity
+        // as we can aggregate initialize 'T' {to_anything...} at most
+        else
+            return sizeof...(to_anything);
+    }
+
+
+</pre>
+</body>
+</html>
+
+
