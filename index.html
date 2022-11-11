@@ -30,7 +30,7 @@
             return arity&lt;T&gt;(to_anything..., ToAnything{});
 
         // no ? so we found the aggregate arity
-        // as we can aggregate initialize 'T' {to_anything...} at most
+        // as we can aggregate initialize 'T' with {to_anything...} at most
         else
             return sizeof...(to_anything);
     }
